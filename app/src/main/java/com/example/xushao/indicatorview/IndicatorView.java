@@ -52,12 +52,9 @@ public class IndicatorView extends ViewGroup {
         int dotSize = getResources().getDimensionPixelSize(R.dimen.indicator_dot_size);// 每个点的尺寸
         int w = right - left;
         int h = bottom - top;
-        // 最大显示长度
-        int maxDisplayW = w * 3 / 4;
-        // 项与项之间的默认间隔
-        int defaultVal = dotSize;
-        // 首个项的初始位置
-        int firstDotL;
+        int maxDisplayW = w * 3 / 4;// 最大显示长度
+        int defaultVal = dotSize;// 项与项之间的默认间隔
+        int firstDotL;// 首个项的初始位置
         // 初步预算显示长度
         int displayW = dotSize * count + defaultVal * (count - 1);
         // 超出最大显示长度的情况
