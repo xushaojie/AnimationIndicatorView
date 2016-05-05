@@ -18,9 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <br>类描述:指示器视图类
+ * 指示器视图类
  * <br>功能详细描述:该指示器存在默认间隔和最大显示长度。
- * 当达到最大显示长度之前，项与项之间使用默认间隔；当到达最大显示长度，项与项之间的间隔会相对减少
+ * 当达到最大显示长度之前，项与项之间使用默认间隔；当到达最大显示长度，项与项之间的间隔会相对减少.
+ * <p/>
+ * 属性动画的运行机制是通过不断地对值进行操作来实现的，而初始值和结束值之间的动画过渡就是由ValueAnimator这个类来负责计算的.
  */
 public class IndicatorView extends ViewGroup {
 
@@ -29,7 +31,7 @@ public class IndicatorView extends ViewGroup {
 
     private boolean mIsAnimate = false;
     private TimeInterpolator mBounceInterpolator;
-    private AnimatorSet mIndicatorAnim;
+    private AnimatorSet mAnimatorSet;// 将动画效果组合起来使用
 
     private List<IndicatorDot> mDots = new ArrayList<>();
     private int mCount;
@@ -112,6 +114,11 @@ public class IndicatorView extends ViewGroup {
         return dot;
     }
 
+    /**
+     * ValueAnimator:内部使用一种时间循环的机制来计算值与值之间的动画过渡，我们只需要将初始值和结束值提供给ValueAnimator，
+     * 并且告诉它动画所需运行的时长，那么ValueAnimator就会自动帮我们完成从初始值平滑地过渡到结束值这样的效果。
+     * 除此之外，ValueAnimator还负责管理动画的播放次数、播放模式、以及对动画设置监听器等.
+     */
     public void onPageChanged(final int newPage, final int oldPage) {
         resetDot();
         initDotsLayout(0, 0, getWidth(), getHeight());
@@ -126,7 +133,7 @@ public class IndicatorView extends ViewGroup {
             invalidate();
         } else {
             if (mIsAnimate) {
-                mIndicatorAnim.end();
+                mAnimatorSet.end();
             }
             ValueAnimator dotShrink = new ValueAnimator();
             dotShrink.setFloatValues(0f, 1f);
@@ -179,9 +186,9 @@ public class IndicatorView extends ViewGroup {
                 }
             });
             // 动画集
-            mIndicatorAnim = new AnimatorSet();
-            mIndicatorAnim.playTogether(dotShrink, dotExpand);
-            mIndicatorAnim.addListener(new AnimatorListenerAdapter() {
+            mAnimatorSet = new AnimatorSet();
+            mAnimatorSet.playTogether(dotShrink, dotExpand);
+            mAnimatorSet.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mIsAnimate = false;
@@ -192,7 +199,7 @@ public class IndicatorView extends ViewGroup {
                     mIsAnimate = true;
                 }
             });
-            mIndicatorAnim.start();
+            mAnimatorSet.start();
         }
     }
 
