@@ -147,20 +147,6 @@ public class IndicatorView extends ViewGroup {
                     invalidate();
                 }
             });
-            dotShrink.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    super.onAnimationStart(animation);
-                    for (int i = 0; i < mDots.size(); i++) {
-                        mDots.get(i).setSelectState(false);
-                    }
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mDots.get(oldPage).setSelectState(false);// 缩小
-                }
-            });
             // 指示器收缩的属性动画，此ValueAnimator的作用是让oldPage屏处的指示器和newPage屏出的指示器不同步的动画
             ValueAnimator dotExpand = new ValueAnimator();
             dotExpand.setFloatValues(0f, 1.0f);
@@ -172,16 +158,6 @@ public class IndicatorView extends ViewGroup {
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float r = (Float) animation.getAnimatedValue();
                     mDots.get(newPage).setScale(r);// 放大
-                    invalidate();
-                }
-            });
-            dotExpand.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    for (int i = 0; i < mDots.size(); i++) {
-                        mDots.get(i).setSelectState(false);
-                    }
-                    mDots.get(newPage).setSelectState(true);// 放大
                     invalidate();
                 }
             });
